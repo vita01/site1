@@ -1,0 +1,45 @@
+from django.db import models
+from wagtail.models import Page
+from wagtail.fields import RichTextField
+from wagtail.admin.panels import FieldPanel
+from django.utils import timezone
+from django.db import models
+from django.contrib.auth.models import User
+
+class UserWeight(models.Model):
+    telegram_user_id = models.BigIntegerField(unique=True)
+    weight = models.FloatField()
+    updated_at = models.DateTimeField(auto_now=True)
+
+class HomePage(Page):
+    body = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel("body"),
+    ]
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        context['your_healthbot_page'] = HealthBotPage.objects.live().first()
+        return context
+
+
+class HealthBotPage(Page):
+    intro = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro", heading='Введение'),
+    ]
+
+class HealthTip(models.Model):
+    text = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.text[:50]
+
+
+class UserWeight(models.Model):
+    telegram_user_id = models.BigIntegerField(unique=True)
+    weight = models.FloatField()
+    updated_at = models.DateTimeField(auto_now=True)
