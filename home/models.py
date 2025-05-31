@@ -31,7 +31,8 @@ class HealthBotPage(Page):
         FieldPanel("intro", heading='Введение'),
     ]
 
-    template = "health_bot_page.html"  # <-- добавь эт
+    #template = "health_bot_page.html"  # <-- должно быть именно так
+
 class HealthTip(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
