@@ -6,10 +6,6 @@ print("Loading settings.py")
 
 # Загружаем переменные окружения из файла .env (если он есть)
 load_dotenv()
-print("DJANGO environment variables:")
-for key, value in os.environ.items():
-    if key.startswith("DJANGO_"):
-        print(f"  {key} = {value}")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -100,8 +96,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-# Для продакшена лучше добавить STATIC_ROOT, например:
-# STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATIC_ROOT = BASE_DIR / "staticfiles"  # для продакшена
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
