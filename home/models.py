@@ -20,7 +20,7 @@ class HomePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        context['your_health_bot_page'] = HealthBotPage.objects.live().first()
+        context['health_bot_page'] = HealthBotPage.objects.live().first()
         return context
 
 
