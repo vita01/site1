@@ -1,19 +1,20 @@
-print("Loading settings.py")
-print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
 import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-print("DJANGO_SETTINGS_MODULE:", os.getenv('DJANGO_SETTINGS_MODULE'))
+print("Loading settings.py")
 
 # Загружаем переменные окружения из файла .env (если он есть)
 load_dotenv()
+print("DJANGO environment variables:")
+for key, value in os.environ.items():
+    if key.startswith("DJANGO_"):
+        print(f"  {key} = {value}")
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Секретный ключ и отладка берутся из переменных окружения, с запасным значением для локальной разработки
+# Секретный ключ и DEBUG берём из окружения, с запасным значением для локальной разработки
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-fallback-secret-key')
-
 DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = [
@@ -24,10 +25,11 @@ ALLOWED_HOSTS = [
     'site1-8kn8.onrender.com',
 ]
 
-# Чистим от пустых и лишних пробелов
+# Убираем пустые строки и пробелы, если они вдруг есть
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS if host.strip()]
 
 print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
+print("DJANGO_SETTINGS_MODULE:", os.getenv('DJANGO_SETTINGS_MODULE'))
 
 INSTALLED_APPS = [
     "home",
