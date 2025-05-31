@@ -1,11 +1,33 @@
-from pathlib import Path
+print("Loading settings.py")
+print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
 import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+print("DJANGO_SETTINGS_MODULE:", os.getenv('DJANGO_SETTINGS_MODULE'))
+
+# Загружаем переменные окружения из файла .env (если он есть)
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'your-secret-key'
-DEBUG = True
-ALLOWED_HOSTS = []
+# Секретный ключ и отладка берутся из переменных окружения, с запасным значением для локальной разработки
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-fallback-secret-key')
+
+DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'love2self.com',
+    'www.love2self.com',
+    'site1-8kn8.onrender.com',
+]
+
+# Чистим от пустых и лишних пробелов
+ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS if host.strip()]
+
+print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
 
 INSTALLED_APPS = [
     "home",
@@ -76,6 +98,8 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+# Для продакшена лучше добавить STATIC_ROOT, например:
+# STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
