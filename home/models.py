@@ -20,7 +20,7 @@ class HomePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        context['your_healthbot_page'] = HealthBotPage.objects.live().first()
+        context['your_health_bot_page'] = HealthBotPage.objects.live().first()
         return context
 
 
@@ -31,6 +31,7 @@ class HealthBotPage(Page):
         FieldPanel("intro", heading='Введение'),
     ]
 
+    template = "healthbot_page.html"  # <-- добавь эт
 class HealthTip(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
@@ -39,7 +40,3 @@ class HealthTip(models.Model):
         return self.text[:50]
 
 
-class UserWeight(models.Model):
-    telegram_user_id = models.BigIntegerField(unique=True)
-    weight = models.FloatField()
-    updated_at = models.DateTimeField(auto_now=True)

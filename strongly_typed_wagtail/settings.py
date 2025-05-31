@@ -108,3 +108,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 WAGTAIL_SITE_NAME = "Strongly Typed"
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")
