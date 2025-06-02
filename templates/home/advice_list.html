@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="py-10 px-4 max-w-3xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6 text-green-700">🌿 Советы по здоровью</h1>
+  <div class="space-y-4">
+    {% for advice in advices %}
+      <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+        <p class="text-lg text-gray-800 dark:text-gray-200">📝 {{ advice.text }}</p>
+        <p class="text-sm text-gray-500 mt-2">{{ advice.created_at|date:"d M Y, H:i" }}</p>
+      </div>
+    {% empty %}
+      <p class="text-gray-500">Пока нет советов.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

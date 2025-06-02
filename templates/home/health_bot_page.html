@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-white dark:bg-black">
+  <div class="max-w-2xl w-full mx-auto p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl shadow">
+    <h1 class="text-2xl font-bold mb-4 text-green-700">🤖 Здоровый бот</h1>
+    <p class="mb-4 text-gray-600 dark:text-gray-300">
+      Задай вопрос по здоровью и питанию, и бот ответит!
+    </p>
+
+    <textarea id="question" rows="4" class="w-full p-3 border rounded" placeholder="Напиши свой вопрос..."></textarea>
+    <button onclick="askBot()" class="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+      Отправить
+    </button>
+
+    <div id="answer" class="mt-6 p-4 bg-green-100 text-green-900 rounded hidden"></div>
+
+    <button id="save-btn" onclick="saveAdvice()" 
+    class="mt-4 w-full bg-white border border-green-600 text-green-700 py-2 rounded-lg font-semibold hover:bg-green-100 transition hidden">
+    💾 Добавить совет на сайт
+  </button>
+  <a href="{% url 'advice_list' %}" class="block mt-4 text-green-600 underline">📖 Смотреть советы</a>
+
+  </div>
+</section>
+
+<script>
+  // Получаем CSRF-токен из куки
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie("csrftoken");
+
+  // Отправка вопроса боту
+  async function askBot() {
+    const question = document.getElementById("question").value.trim();
+    const answerBox = document.getElementById("answer");
+    const saveBtn = document.getElementById("save-btn");
+    answerBox.classList.add("hidden");
+    saveBtn.classList.add("hidden");
+
+    if (!question) return;
+
+    answerBox.innerText = "⏳ Думаю...";
+    answerBox.classList.remove("hidden");
+
+    try {
+      const response = await fetch("/api/ask_bot/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({ question }),
+      });
+
+      const data = await response.json();
+      answerBox.innerText = data.answer || data.error || "⚠️ Что-то пошло не так";
+
+      if (data.answer) {
+        saveBtn.classList.remove("hidden"); // Показать кнопку сохранения
+      }
+    } catch (e) {
+      answerBox.innerText = "⚠️ Ошибка соединения с сервером";
+    }
+  }
+
+  // Сохранение совета
+  async function saveAdvice() {
+    const text = document.getElementById("answer").innerText;
+
+    if (!text) return;
+
+    try {
+      const response = await fetch("/api/save_advice/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === "ok") {
+        alert("✅ Совет сохранён на сайт!");
+        document.getElementById("save-btn").classList.add("hidden");
+      } else {
+        alert("⚠️ Ошибка при сохранении");
+      }
+    } catch (e) {
+      alert("⚠️ Ошибка при соединении с сервером");
+    }
+  }
+</script>
+{% endblock %}

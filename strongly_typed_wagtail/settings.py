@@ -1,18 +1,20 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from decouple import config
+
+# Загружаем переменные окружения из файла .env
+load_dotenv()
 
 print("Loading settings.py")
 
-# Загружаем переменные окружения из файла .env (если он есть)
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Секретный ключ и DEBUG берём из окружения, с запасным значением для локальной разработки
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-fallback-secret-key')
-DEBUG = os.getenv('DJANGO_DEBUG', 'True').lower() == 'true'
+# Секретный ключ и DEBUG
+SECRET_KEY = config('DJANGO_SECRET_KEY', default='your-fallback-secret-key')
+DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
 
+# Хосты
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
@@ -20,13 +22,16 @@ ALLOWED_HOSTS = [
     'www.love2self.com',
     'site1-8kn8.onrender.com',
 ]
-
-# Убираем пустые строки и пробелы, если они вдруг есть
 ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS if host.strip()]
 
 print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
 print("DJANGO_SETTINGS_MODULE:", os.getenv('DJANGO_SETTINGS_MODULE'))
 
+# Устанавливаем ключи API
+OPENAI_API_KEY = config("OPENAI_API_KEY", default="")
+OPENROUTER_API_KEY = config("OPENROUTER_API_KEY", default="")
+
+# Установленные приложения
 INSTALLED_APPS = [
     "home",
     "wagtail.contrib.forms",
@@ -50,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
 ]
 
+# Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,11 +64,12 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = "strongly_typed_wagtail.urls"
 
+# Шаблоны
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -81,6 +88,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "strongly_typed_wagtail.wsgi.application"
 
+# База данных (SQLite по умолчанию)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -88,26 +96,25 @@ DATABASES = {
     }
 }
 
+# Валидаторы паролей (можно оставить пустыми для dev)
 AUTH_PASSWORD_VALIDATORS = []
 
+# Локализация
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
+# Файлы
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
-# STATIC_ROOT = BASE_DIR / "staticfiles"  # для продакшена
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
 WAGTAIL_SITE_NAME = "Strongly Typed"
 
+# Для WhiteNoise
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "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")

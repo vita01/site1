@@ -3,12 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    
-  "test": "echo \"Error: no test specified\" && exit 1",
-   
-  "build:css": "tailwindcss -i ./static/src/styles.css -o ./static/css/styles.css --watch",
-  "tailwind:init": "npx tailwindcss init -p"
-
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "tailwindcss -i ./static/src/styles.css -o ./static/css/styles.css --watch",
+    "tailwind:init": "npx tailwindcss init -p"
   },
   "keywords": [],
   "author": "",
@@ -16,7 +13,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.3",
-    "tailwindcss": "^3.3.2"
+    "tailwindcss": "^3.4.17"
   },
   "dependencies": {
     "browserslist": "^4.24.5",

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Здоровый бот — Lovetoself</title>
+  <link href="/static/css/styles.css" rel="stylesheet" />
+ 
+</head>
+<body class="bg-gradient-to-tr from-green-50 via-white to-green-100 min-h-screen flex flex-col">
+
+  <!-- Шапка -->
+  <header class="bg-white shadow-md sticky top-0 z-50">
+    <h1>Тест шаблона работает</h1>
+
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="/" class="text-2xl font-bold text-green-700">🌿 Lovetoself</a>
+      <nav class="space-x-4">
+        <a href="/" class="text-gray-600 hover:text-green-700">На главную</a>
+      </nav>
+    </div>
+  </header>
+
+
+  <textarea id="question" rows="4" placeholder="Напиши свой вопрос..."></textarea>
+<button onclick="askBot()">Отправить</button>
+<div id="answer" style="display:none; margin-top:10px; border:1px solid green; padding:10px;"></div>
+
+<button onclick="console.log('Кнопка работает'); askBot()">Проверка кнопки</button>
+
+
+
+  <!-- Контент -->
+  <main class="flex-grow flex items-center justify-center px-4">
+    <div class="max-w-xl w-full bg-white rounded-3xl shadow-xl p-8 border border-green-100">
+      <h1 class="text-3xl font-semibold text-green-700 mb-4">🤖 Здоровый бот</h1>
+      <p class="text-gray-600 mb-6">Спроси что-нибудь о здоровье, питании или привычках — и я помогу!</p>
+
+      <textarea id="question" rows="3" class="w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Напиши свой вопрос..."></textarea>
+
+      <button onclick="askBot()" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition">
+        Отправить
+      </button>
+
+      <div id="answer" class="mt-6 p-4 bg-green-100 text-green-900 rounded-xl hidden whitespace-pre-line shadow-inner"></div>
+    </div>
+  </main>
+
+  <!-- Подвал -->
+  <footer class="bg-white border-t mt-12 py-4 text-center text-sm text-gray-500">
+    © 2025 Lovetoself — заботься о себе 🌱
+  </footer>
+
+  <!-- JS -->
+  <script>
+     // Получить CSRF токен из cookies
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const csrftoken = getCookie("csrftoken");
+    async function askBot() {
+      const question = document.getElementById("question").value.trim();
+      const answerBox = document.getElementById("answer");
+      answerBox.classList.add("hidden");
+
+      if (!question) return;
+
+      answerBox.innerText = "⏳ Думаю...";
+      answerBox.classList.remove("hidden");
+
+      try {
+        const response = await fetch("/api/ask_bot/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+
+        const data = await response.json();
+        answerBox.innerText = data.answer || data.error || "⚠️ Что-то пошло не так";
+      } catch (e) {
+        answerBox.innerText = "⚠️ Ошибка соединения с сервером";
+      }
+    }
+  </script>
+
+</body>
+</html>

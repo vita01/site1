@@ -12,6 +12,7 @@ urlpatterns = [
     path('documents/', include(wagtaildocs_urls)),
     path('', include('home.urls')),  # свои урлы
     path('', include(wagtail_urls)),  # wagtail страницы
+   
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

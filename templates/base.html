@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lovetoself — Здоровье и питание</title>
+  <title>{% block title %}Lovetoself — Здоровье и питание{% endblock %}</title>
   <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -23,13 +23,15 @@
       });
     });
   </script>
+  {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-white text-gray-800 dark:bg-black dark:text-white">
 
   <!-- Навигация -->
   <header class="fixed w-full bg-white shadow z-50">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-      <a href="#start" class="text-xl font-bold text-green-700">Lovetoself</a>
+      <a href="/#start" class="text-xl font-bold text-green-700">Lovetoself</a>
+
       <nav class="space-x-4">
         <a href="#habits" class="text-gray-700 hover:text-green-700 transition">Привычки</a>
         <a href="#menu" class="text-gray-700 hover:text-green-700 transition">Питание</a>
@@ -39,85 +41,12 @@
     </div>
   </header>
 
-  <!-- Hero-секция -->
-  <section id="start" class="relative bg-cover bg-center h-screen pt-20" style="background-image: url('{% static 'images/hero-bg.jpg' %}');">
-    <div class="flex flex-col justify-center items-center h-full bg-white/70 text-center p-6" data-aos="fade-up">
-      <h1 class="text-4xl md:text-6xl font-extrabold text-green-700 mb-4 drop-shadow-md">Здоровье и питание — путь к себе</h1>
-      <p class="text-xl md:text-2xl text-gray-700 mb-6">Простые шаги к легкости, энергии и любви к себе</p>
-      <a href="#habits" class="bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition duration-300 shadow-lg">Начать путь →</a>
-    </div>
-  </section>
-
-  <!-- Полезные привычки -->
-  <section id="habits" class="py-20 bg-gray-100 text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-12" data-aos="fade-up">Полезные привычки для здоровья</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl mx-auto">
-      <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition" data-aos="zoom-in">
-        <div class="text-6xl mb-4">🛌</div>
-        <p class="text-xl font-medium">Здоровый сон</p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition" data-aos="zoom-in" data-aos-delay="100">
-        <div class="text-6xl mb-4">🥤</div>
-        <p class="text-xl font-medium">Вода каждый день</p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition" data-aos="zoom-in" data-aos-delay="200">
-        <div class="text-6xl mb-4">🏃</div>
-        <p class="text-xl font-medium">Движение без напряга</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Питание -->
-  <section id="menu" class="py-20 text-center bg-white">
-    <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">Лёгкое питание без строгих диет</h2>
-    <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Сбалансированный рацион, подходящий даже при сменном графике.</p>
-    <a href="#recipes" class="bg-blue-500 text-white px-8 py-4 rounded-full hover:bg-blue-600 transition duration-300 shadow">Посмотреть меню</a>
-  </section>
-
-  <!-- Рецепты -->
-  <section id="recipes" class="py-20 bg-gray-100 text-center">
-    <h2 class="text-3xl md:text-4xl font-bold mb-12" data-aos="fade-up">Простые рецепты для занятых</h2>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-4xl mx-auto">
-      <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition" data-aos="flip-left">
-        <div class="text-6xl mb-4">🍳</div>
-        <p class="text-xl font-medium">Завтраки</p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition" data-aos="flip-left" data-aos-delay="100">
-        <div class="text-6xl mb-4">🥗</div>
-        <p class="text-xl font-medium">Обеды</p>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition" data-aos="flip-left" data-aos-delay="200">
-        <div class="text-6xl mb-4">🍵</div>
-        <p class="text-xl font-medium">Ужины</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Поддержка и мотивация -->
-  <section id="support" class="py-20 text-center bg-white">
-    <h2 class="text-3xl md:text-4xl font-bold mb-6" data-aos="fade-up">Ты не один(а) — мы вместе</h2>
-    <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Каждый путь к здоровью индивидуален. Мы здесь, чтобы поддерживать тебя каждый день.</p>
-    <div class="flex flex-col md:flex-row justify-center gap-6" data-aos="fade-up" data-aos-delay="200">
-      
-      <a href="#stories" class="bg-purple-500 text-white px-8 py-4 rounded-full hover:bg-purple-600 transition duration-300 shadow">
-        Истории успеха
-      </a>
-
-      {% if health_bot_page %}
-  <a href="{% pageurl health_bot_page %}" 
-     class="bg-green-500 text-white px-8 py-4 rounded-full hover:bg-green-600 transition shadow-lg inline-block">
-    Советы от бота →
-  </a>
-{% else %}
-  <button disabled 
-          class="bg-green-300 text-white px-8 py-4 rounded-full cursor-not-allowed opacity-50 shadow inline-block">
-    Советы от бота
-  </button>
-{% endif %}
-
-      
-    </div>
-  </section>
+  <!-- Основной контент -->
+  <main>
+    {% block content %}
+    <!-- Контент страницы сюда -->
+    {% endblock %}
+  </main>
 
   <!-- Футер -->
   <footer class="bg-gray-800 text-white py-6 text-center">
@@ -131,5 +60,6 @@
     </div>
   </footer>
 
+  {% block extra_scripts %}{% endblock %}
 </body>
 </html>
