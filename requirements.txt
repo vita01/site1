@@ -46,3 +46,4 @@ urllib3==2.4.0
 wagtail==6.4.1
 whitenoise==6.9.0
 Willow==1.10.0
+python-decouple
