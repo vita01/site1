@@ -36,9 +36,8 @@ def ask_openrouter(prompt: str) -> str:
     url = "https://openrouter.ai/api/v1/chat/completions"
 
     headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+        "Authorization": f"Bearer {OPENROUTER_API_KEY}",  # Убедитесь, что переменная есть
         "Content-Type": "application/json",
-       # "HTTP-Referer": "http://localhost",  # замени на свой домен, если нужно
         "X-Title": "HealthBot"
     }
 
@@ -49,14 +48,28 @@ def ask_openrouter(prompt: str) -> str:
 
     try:
         response = requests.post(url, headers=headers, json=payload)
+
+        # Логируем статус и весь текст ответа от OpenRouter
+        print("=== OpenRouter Debug ===")
+        print("Status code:", response.status_code)
+        print("Response text:", response.text)
+        print("========================")
+
         if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"].strip()
+            data = response.json()
+            if "choices" in data and data["choices"]:
+                return data["choices"][0]["message"]["content"].strip()
+            else:
+                logging.error(f"⚠️ Ответ не содержит 'choices': {data}")
+                return "⚠️ ИИ не вернул совет. Возможно, ошибка в модели или токене."
         else:
-            logging.error(f"OpenRouter ошибка: {response.status_code} {response.text}")
-            return "⚠️ Ошибка от OpenRouter. Проверь API-ключ и настройки."
+            logging.error(f"⚠️ Ошибка от OpenRouter: {response.status_code} {response.text}")
+            return "⚠️ Ошибка от OpenRouter. Проверь API-ключ и модель."
     except Exception as e:
-        logging.error(f"Сбой при обращении к OpenRouter: {str(e)}")
+        logging.error(f"❌ Сбой при обращении к OpenRouter: {str(e)}", exc_info=True)
         return "⚠️ Возникла ошибка при обращении к ИИ."
+
+
 
 # Команды бота
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -1,59 +1,32 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Здоровый бот — Lovetoself</title>
-  <link href="/static/css/styles.css" rel="stylesheet" />
- 
-</head>
-<body class="bg-gradient-to-tr from-green-50 via-white to-green-100 min-h-screen flex flex-col">
+{% extends "base.html" %}
+{% load static %}
 
-  <!-- Шапка -->
-  <header class="bg-white shadow-md sticky top-0 z-50">
-    <h1>Тест шаблона работает</h1>
+{% block content %}
+<section class="min-h-screen flex items-center justify-center bg-white dark:bg-black">
+  <div class="max-w-2xl w-full mx-auto p-6 bg-gray-50 dark:bg-gray-900 rounded-2xl shadow">
+    <h1 class="text-2xl font-bold mb-4 text-green-700">🤖 Здоровый бот</h1>
+    <p class="mb-4 text-gray-600 dark:text-gray-300">
+      Задай вопрос по здоровью и питанию, и бот ответит!
+    </p>
 
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-      <a href="/" class="text-2xl font-bold text-green-700">🌿 Lovetoself</a>
-      <nav class="space-x-4">
-        <a href="/" class="text-gray-600 hover:text-green-700">На главную</a>
-      </nav>
-    </div>
-  </header>
+    <textarea id="question" rows="4" class="w-full p-3 border rounded" placeholder="Напиши свой вопрос..."></textarea>
+    <button onclick="askBot()" class="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+      Отправить
+    </button>
 
+    <div id="answer" class="mt-6 p-4 bg-green-100 text-green-900 rounded hidden"></div>
 
-  <textarea id="question" rows="4" placeholder="Напиши свой вопрос..."></textarea>
-<button onclick="askBot()">Отправить</button>
-<div id="answer" style="display:none; margin-top:10px; border:1px solid green; padding:10px;"></div>
+    <button id="save-btn" onclick="saveAdvice()" 
+    class="mt-4 w-full bg-white border border-green-600 text-green-700 py-2 rounded-lg font-semibold hover:bg-green-100 transition hidden">
+    💾 Добавить совет на сайт
+  </button>
+  <a href="{% url 'advice_list' %}" class="block mt-4 text-green-600 underline">📖 Смотреть советы</a>
 
-<button onclick="console.log('Кнопка работает'); askBot()">Проверка кнопки</button>
+  </div>
+</section>
 
-
-
-  <!-- Контент -->
-  <main class="flex-grow flex items-center justify-center px-4">
-    <div class="max-w-xl w-full bg-white rounded-3xl shadow-xl p-8 border border-green-100">
-      <h1 class="text-3xl font-semibold text-green-700 mb-4">🤖 Здоровый бот</h1>
-      <p class="text-gray-600 mb-6">Спроси что-нибудь о здоровье, питании или привычках — и я помогу!</p>
-
-      <textarea id="question" rows="3" class="w-full p-4 border rounded-xl focus:outline-none focus:ring-2 focus:ring-green-400" placeholder="Напиши свой вопрос..."></textarea>
-
-      <button onclick="askBot()" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl transition">
-        Отправить
-      </button>
-
-      <div id="answer" class="mt-6 p-4 bg-green-100 text-green-900 rounded-xl hidden whitespace-pre-line shadow-inner"></div>
-    </div>
-  </main>
-
-  <!-- Подвал -->
-  <footer class="bg-white border-t mt-12 py-4 text-center text-sm text-gray-500">
-    © 2025 Lovetoself — заботься о себе 🌱
-  </footer>
-
-  <!-- JS -->
-  <script>
-     // Получить CSRF токен из cookies
+<script>
+  // Получаем CSRF-токен из куки
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -70,30 +43,68 @@
   }
 
   const csrftoken = getCookie("csrftoken");
-    async function askBot() {
-      const question = document.getElementById("question").value.trim();
-      const answerBox = document.getElementById("answer");
-      answerBox.classList.add("hidden");
 
-      if (!question) return;
+  // Отправка вопроса боту
+  async function askBot() {
+  const question = document.getElementById("question").value.trim();
+  const answerBox = document.getElementById("answer");
+  const saveBtn = document.getElementById("save-btn");
+  answerBox.classList.add("hidden");
+  saveBtn.classList.add("hidden");
 
-      answerBox.innerText = "⏳ Думаю...";
-      answerBox.classList.remove("hidden");
+  if (!question) return;
 
-      try {
-        const response = await fetch("/api/ask_bot/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question }),
-        });
+  answerBox.innerText = "⏳ Думаю...";
+  answerBox.classList.remove("hidden");
 
-        const data = await response.json();
-        answerBox.innerText = data.answer || data.error || "⚠️ Что-то пошло не так";
-      } catch (e) {
-        answerBox.innerText = "⚠️ Ошибка соединения с сервером";
-      }
+  try {
+    const response = await fetch("/api/ask_bot/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({ question }),  // ✅ ВОТ ТАК
+    });
+
+    const data = await response.json();
+    answerBox.innerText = data.answer || data.error || "⚠️ Что-то пошло не так";
+
+    if (data.answer) {
+      saveBtn.classList.remove("hidden");
     }
-  </script>
+  } catch (e) {
+    answerBox.innerText = "⚠️ Ошибка соединения с сервером";
+  }
+}
 
-</body>
-</html>
+  // Сохранение совета
+  async function saveAdvice() {
+    const text = document.getElementById("answer").innerText;
+
+    if (!text) return;
+
+    try {
+      const response = await fetch("/api/save_advice/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === "ok") {
+        alert("✅ Совет сохранён на сайт!");
+        document.getElementById("save-btn").classList.add("hidden");
+      } else {
+        alert("⚠️ Ошибка при сохранении");
+      }
+    } catch (e) {
+      alert("⚠️ Ошибка при соединении с сервером");
+    }
+  }
+</script>
+{% endblock %}

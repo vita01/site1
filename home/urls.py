@@ -9,15 +9,12 @@ urlpatterns = [
     path('cms/', include('wagtail.admin.urls')),
     path('documents/', include('wagtail.documents.urls')),
 
-    # Сначала: все кастомные маршруты
+    # Кастомные маршруты
     path("health-bot-page/", views.health_bot_page, name="health_bot_page"),
-    path("api/ask_bot/", views.ask_bot, name="ask_bot_api"),
-    path("advice-list/", views.advice_list, name="advice_list"),
     path("api/ask_bot/", views.ask_bot, name="ask_bot"),
     path("api/save_advice/", views.save_advice, name="save_advice"),
-    # ваш путь ask_bot уже должен быть
+    path("advice-list/", views.advice_list, name="advice_list"),
 
     # В конце — wagtail (обрабатывает всё остальное)
     path('', include(wagtail_urls)),
 ]
-

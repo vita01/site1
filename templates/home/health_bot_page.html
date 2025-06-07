@@ -46,37 +46,37 @@
 
   // Отправка вопроса боту
   async function askBot() {
-    const question = document.getElementById("question").value.trim();
-    const answerBox = document.getElementById("answer");
-    const saveBtn = document.getElementById("save-btn");
-    answerBox.classList.add("hidden");
-    saveBtn.classList.add("hidden");
+  const question = document.getElementById("question").value.trim();
+  const answerBox = document.getElementById("answer");
+  const saveBtn = document.getElementById("save-btn");
+  answerBox.classList.add("hidden");
+  saveBtn.classList.add("hidden");
 
-    if (!question) return;
+  if (!question) return;
 
-    answerBox.innerText = "⏳ Думаю...";
-    answerBox.classList.remove("hidden");
+  answerBox.innerText = "⏳ Думаю...";
+  answerBox.classList.remove("hidden");
 
-    try {
-      const response = await fetch("/api/ask_bot/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken,
-        },
-        body: JSON.stringify({ question }),
-      });
+  try {
+    const response = await fetch("/api/ask_bot/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify({ question }),  // ✅ ВОТ ТАК
+    });
 
-      const data = await response.json();
-      answerBox.innerText = data.answer || data.error || "⚠️ Что-то пошло не так";
+    const data = await response.json();
+    answerBox.innerText = data.answer || data.error || "⚠️ Что-то пошло не так";
 
-      if (data.answer) {
-        saveBtn.classList.remove("hidden"); // Показать кнопку сохранения
-      }
-    } catch (e) {
-      answerBox.innerText = "⚠️ Ошибка соединения с сервером";
+    if (data.answer) {
+      saveBtn.classList.remove("hidden");
     }
+  } catch (e) {
+    answerBox.innerText = "⚠️ Ошибка соединения с сервером";
   }
+}
 
   // Сохранение совета
   async function saveAdvice() {
