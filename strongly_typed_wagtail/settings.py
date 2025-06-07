@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from decouple import config
 
 load_dotenv()
 
@@ -9,10 +10,12 @@ OPENROUTER_API_KEY='sk-or-v1-84b1d6a950daca0e3d98af35c986289d20446896c80a4c497fc
 BOT_REFERERS = os.getenv("BOT_REFERERS", "http://localhost:8000").split(",")
 OPENROUTER_MODEL = "deepseek/deepseek-r1-0528-qwen3-8b:free"
 BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = config("SECRET_KEY")
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '14271997Vika')
+#SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '14271997Vika')
 
-DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in ['true', '1', 'yes']
+#DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() in ['true', '1', 'yes']
 
 ALLOWED_HOSTS = [
     'localhost',
